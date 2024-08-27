@@ -1,0 +1,218 @@
+[build-system]
+build-backend = 'setuptools.build_meta'
+requires = ['setuptools >= 64.0.0']
+
+
+[project]
+name = "ncm"
+version = "0.0.1.dev0"
+description = "Neural causal models in PyTorch."
+maintainers = [{ name = "Adam Li", email = "adam.li@columbia.edu" }]
+documentation = "https://ncm.ai"
+repository = "https://github.com/adam2392/ncm"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+  'Development Status :: 4 - Beta',
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Developers",
+  "License :: Free for non-commercial use",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  'Programming Language :: Python :: 3.9',
+  'Programming Language :: Python :: 3.10',
+  'Programming Language :: Python :: 3.11',
+  'Programming Language :: Python :: 3.12',
+  "Topic :: Scientific/Engineering",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: POSIX",
+  "Operating System :: Unix",
+  "Operating System :: MacOS",
+]
+keywords = ['neural-networks', 'causal representation learning', 'pytorch']
+
+dependencies = [
+  'numpy>=1.25.0',
+  'scipy>=1.5.0',
+  'torch',
+  'normflows',
+  "pytorch-lightning",
+  'torchgan',
+]
+
+[project.optional-dependencies]
+all = ['ncm[build]', 'ncm[doc]', 'ncm[style]', 'ncm[test]', 'ncm[extra]']
+build = ['build', 'twine', 'numpy>=1.25.0']
+doc = [
+  'memory-profiler',
+  'numpydoc',
+  'pooch',
+  'pydata-sphinx-theme==0.14.1',
+  'sphinx==7.2.6',
+  'sphinx-copybutton',
+  'sphinx-design',
+  'sphinx-gallery',
+  'sphinx-issues',
+  'sphinx_autodoc_typehints',
+  'sphinxcontrib-bibtex',
+  'portray',
+  'matplotlib',
+  'ipython',
+  'nbsphinx',
+  'memory_profiler',
+  'pandas',
+  'seaborn',
+  'joblib',
+]
+style = [
+  "pre-commit",
+  'black',
+  'codespell',
+  'isort',
+  'pydocstyle',
+  'pydocstyle[toml]',
+  'rstcheck',
+  'ruff',
+  'toml-sort',
+  'yamllint',
+  'mypy',
+  'flake8',
+  'bandit',
+  'toml',
+]
+test = [
+  'joblib',
+  'pandas',
+  'pytest',
+  'pytest-cov',
+  'memory_profiler',
+  'flaky',
+  'tqdm',
+]
+extra = ['tensorboard>=1.14', 'torchvision']
+
+[tool.bandit]
+exclude_dirs = [
+  "ncm/tests",
+  "ncm/**/tests/*",
+  'ncm/_build_utils/*',
+  'ncm/_lib/*',
+]
+skips = ['B404', 'B603']
+
+[tool.black]
+line-length = 100
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+(
+      __pycache__
+    | \.github
+    | ncm/_lib
+    | .asv
+    | env
+    | build-install
+)
+'''
+
+[tool.codespell]
+builtin = "clear,rare,informal,names,usage"
+ignore-words = ".codespellignore"
+skip = "doc/references.bib"
+
+[tool.coverage.report]
+exclude_lines = ['pragma: no cover', 'if __name__ == .__main__.:']
+precision = 2
+
+[tool.coverage.run]
+branch = true
+cover_pylib = false
+source = ['ncm']
+omit = ['**/__init__.py', '**/tests/**']
+
+
+[tool.isort]
+profile = 'black'
+multi_line_output = 3
+line_length = 100
+py_version = 38
+extend_skip_glob = ['ncm/__init__.py', '.asv/*', 'env/*']
+
+[tool.mypy]
+ignore_missing_imports = true
+no_site_packages = true
+exclude = ['benchmarks_nonasv/']
+
+[tool.pydocstyle]
+convention = 'numpy'
+ignore-decorators = '(copy_doc|property|.*setter|.*getter)'
+match = '^(?!setup|__init__|test_|_lib).*\.py'
+match-dir = '^ncm*'
+add_ignore = 'D100,D104,D105,D107'
+
+[tool.pytest.ini_options]
+minversion = '6.0'
+addopts = '--durations 20 --junit-xml=junit-results.xml --verbose --ignore=ncm/_lib/ -k "not slowtest"'
+filterwarnings = [
+  'ignore:Using sklearn tree so store_leaf_values cannot be set.*',
+]
+
+[tool.rstcheck]
+ignore_directives = [
+  "autoclass",
+  "autofunction",
+  "automodule",
+  "autosummary",
+  "bibliography",
+  "cssclass",
+  "currentmodule",
+  "dropdown",
+  "footbibliography",
+  "glossary",
+  "graphviz",
+  "grid",
+  "highlight",
+  "minigallery",
+  "rst-class",
+  "tab-set",
+  "tabularcolumns",
+  "toctree",
+  "auto_examples",
+]
+ignore_messages = "^.*(Unknown target name|Undefined substitution referenced)[^`]*$"
+ignore_roles = [
+  "attr",
+  "class",
+  "doc",
+  "eq",
+  "exc",
+  "file",
+  "footcite",
+  "footcite:t",
+  "func",
+  "gh",
+  "kbd",
+  "meth",
+  "mod",
+  "newcontrib",
+  "pr",
+  "py:mod",
+  "ref",
+  "samp",
+  "term",
+  "doi",
+  "arxiv",
+]
+report_level = "WARNING"
+ignore = ["SEVERE/4"]
+
+[tool.ruff]
+extend-exclude = ['benchmarks', 'doc', 'validation']
+line-length = 88
+
+[tool.ruff.lint]
+ignore = ['E731']
+
+[tool.ruff.lint.per-file-ignores]
+'__init__.py' = ['F401']
